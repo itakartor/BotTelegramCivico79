@@ -25,7 +25,9 @@ nightMessage:str = """ Ah no aspetta, ma l'aula studio è aperta pure la sera? \
                         L'aula studio sarà a disposizione dalle 19 fino alle 23 con la possibilità di mangiare insieme.\n' """
 restMessage:str = """ Buon weekend a tutti, oggi l'aula studio non sarà a disposizione. \nPerò vi aspettiamo nei prossimi giorni per prendere un aperitivo insieme.\n"""
 
-whoMessage:str = """ Ciao! \nSiamo dei ragazzi di Livorno appartenenti alla realtà del Civico79,\n spazio interamente dedicato a noi giovani universitari e lavoratori dai 19 ai 35 anni,\n come aula studio e molto altro.\n"""
+whoMessage:str = """ Ciao! \nSiamo dei ragazzi di Livorno appartenenti alla realtà del Civico79,
+                    \n spazio interamente dedicato a noi giovani universitari e lavoratori dai 19 ai 35 anni,
+                    \n come aula studio e molto altro.\n Se siete curiosi vi aspettiamo in viale Risorgimento 77 Livorno"""
 
 # it uses for to send the messages on the channel
 # instead of the user id which I can get from the update object
