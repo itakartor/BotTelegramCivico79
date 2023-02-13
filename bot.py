@@ -1,4 +1,5 @@
 import logging
+import os
 from telegram import Bot, Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 from datetime import datetime
@@ -7,6 +8,11 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
+
+TOKEN:str = os.environ.get('BOT_TOKEN')
+PORT:int = int(os.environ.get('PORT', 5000))
+
+logger = logging.getLogger(__name__)
 class InfoUser():
     firstname:str
     lastname:str
@@ -36,6 +42,11 @@ come aula studio e molto altro.Se siete curiosi vi aspettiamo in viale Risorgime
 # it uses for to send the messages on the channel
 # instead of the user id which I can get from the update object
 idChannel:str = '@Civico79Livorno'
+
+def error(update, context):
+    """Log Errors caused by Updates."""
+    logger.warning('Update "%s" caused error "%s"', update, context.error)
+
 
 # this function get the name of the people which uses the bot
 def writeName(update: Update):
@@ -84,7 +95,7 @@ async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=idChannel, text='One message every minute')
 
 
-if __name__ == '__main__':
+def main():
     token:str = input('insert a new token \n')
     application = ApplicationBuilder().token(token).build()
     start_handler = CommandHandler('start', start)
@@ -105,4 +116,20 @@ if __name__ == '__main__':
     application.add_handler(instagram_handler)
     application.add_handler(facebook_handler)
     application.add_handler(who_handler)
-    application.run_polling()
+    
+    # log all errors
+    application.add_error_handler(error)
+
+    # Start the Bot
+    application.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=TOKEN)
+    application.bot.setWebhook('https://civico79.herokuapp.com/' + TOKEN)
+
+    # Run the bot until you press Ctrl-C or the process receives SIGINT,
+    # SIGTERM or SIGABRT. This should be used most of the time, since
+    # start_polling() is non-blocking and will stop the bot gracefully.
+    application.idle()
+
+if __name__ == '__main__':
+    main()
