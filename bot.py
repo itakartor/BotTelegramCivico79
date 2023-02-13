@@ -15,19 +15,23 @@ class InfoUser():
         return f"{self.firstname} - {self.lastname} - {self.username} - {datetime.now()}"
 
 # These are the main messages
-normalDayMessage:str = """Buongiorno, \n
-                        l'aula studio sarà disponibile dalle 16 del pomeriggio \n fino alle 19 della sera.\n
-                        """
-nightMessage:str = """ Ah no aspetta, ma l'aula studio è aperta pure la sera? \n
-                        Civico79: 'Certo, per tutti gli studenti lavoratori,\n 
-                        le persone che non trovano un posto tranquillo dove studiare e stare insieme.\n
-                        Oppure per quelli che preferiscono al luce della luna a quella del sole.\n
-                        L'aula studio sarà a disposizione dalle 19 fino alle 23 con la possibilità di mangiare insieme.\n' """
-restMessage:str = """ Buon weekend a tutti, oggi l'aula studio non sarà a disposizione. \nPerò vi aspettiamo nei prossimi giorni per prendere un aperitivo insieme.\n"""
+normalDayMessage:str = """Buongiorno, 
+l'aula studio sarà disponibile dalle 15:30 del pomeriggio fino alle 19 della sera.
+"""
+nightMessage:str ="""
+Ah no aspetta, ma l'aula studio è aperta pure la sera? 
 
-whoMessage:str = """ Ciao! \nSiamo dei ragazzi di Livorno appartenenti alla realtà del Civico79,
-                    \n spazio interamente dedicato a noi giovani universitari e lavoratori dai 19 ai 35 anni,
-                    \n come aula studio e molto altro.\n Se siete curiosi vi aspettiamo in viale Risorgimento 77 Livorno"""
+Civico79: 
+'Certo fino al 21 Febbraio sarà aperta, per tutti gli studenti lavoratori, 
+le persone che non trovano un posto tranquillo dove studiare.
+L'aula studio sarà a disposizione dalle 19 fino alle 23 con la possibilità di mangiare insieme.
+"""
+restMessage:str = """ Buon weekend a tutti, oggi l'aula studio non sarà a disposizione. Però vi aspettiamo nei prossimi giorni per prendere un aperitivo insieme.\n"""
+
+whoMessage:str = """ Ciao!
+Siamo dei ragazzi di Livorno appartenenti alla realtà del Civico79,
+spazio interamente dedicato a noi giovani universitari e lavoratori dai 19 ai 35 anni,
+come aula studio e molto altro.Se siete curiosi vi aspettiamo in viale Risorgimento 77 Livorno"""
 
 # it uses for to send the messages on the channel
 # instead of the user id which I can get from the update object
@@ -56,10 +60,10 @@ async def messageIoStudio(context: ContextTypes.DEFAULT_TYPE,pIdChannel:str=idCh
     dayOfWeek = date.weekday()
     if(dayOfWeek >= 0 and dayOfWeek <= 4): # Monday, Tuesday, Wednesday, Thursday, Friday
         message += normalDayMessage
-    elif(dayOfWeek <= 2): # Monday, Tuesday, Wednesday
-        message += nightMessage
     else: # Saturday, Sunday   
        message += restMessage
+    if(dayOfWeek <= 2): # Monday, Tuesday, Wednesday
+        message += nightMessage
     await context.bot.send_message(chat_id=pIdChannel, text=message)
     
 async def messageIoStudioUser(update: Update, context: ContextTypes.DEFAULT_TYPE):
