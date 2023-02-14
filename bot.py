@@ -9,7 +9,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-TOKEN:str = os.environ.get('BOT_TOKEN')
+TOKEN:str = os.environ.get('TOKEN')
 PORT:int = int(os.environ.get('PORT', 5000))
 
 logger = logging.getLogger(__name__)
@@ -94,22 +94,31 @@ async def who(update: Update,context: ContextTypes.DEFAULT_TYPE):
 async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=idChannel, text='One message every minute')
 
+async def newUser(update:Update,context: ContextTypes.DEFAULT_TYPE):
+    print(update.message.new_chat_members)
+    if (update.message.new_chat_members != None):
+            print(update.message.new_chat_member.username);
+            print(update.message.new_chat_member.id);
+    else:
+            print("new_chat_members is not defined");
+        
+    await context.bot.send_message(chat_id=update.effective_chat.id, text='One message every minute')
 
 def main():
-    token:str = input('insert a new token \n')
-    application = ApplicationBuilder().token(token).build()
+    application = ApplicationBuilder().token(TOKEN).build()
     start_handler = CommandHandler('start', start)
     ioStudio_handler = CommandHandler('iostudio', messageIoStudioUser)
     instagram_handler = CommandHandler('instagram', instagram)
     facebook_handler = CommandHandler('facebook', facebook)
     who_handler = CommandHandler('chiii', who)
     
+    newUser_handler = CommandHandler('message', newUser)
     # queue of the jobs
     job_queue = application.job_queue
 
     # the job starts to 11:00
     job_minute = job_queue.run_daily(messageIoStudio, time(hour=11,minute=00,second=00))
-
+    
 
     application.add_handler(start_handler)
     application.add_handler(ioStudio_handler)
@@ -121,15 +130,7 @@ def main():
     application.add_error_handler(error)
 
     # Start the Bot
-    application.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=TOKEN)
-    application.bot.setWebhook('https://civico79.herokuapp.com/' + TOKEN)
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    application.idle()
+    application.run_polling()
 #
 if __name__ == '__main__':
     main()
