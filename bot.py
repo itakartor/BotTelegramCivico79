@@ -61,7 +61,7 @@ def writeName(update: Update):
     info.firstname = update.message.from_user.first_name
     info.lastname = update.message.from_user.last_name
     info.username = update.message.from_user.username
-    with open('nameAccessBot.txt','w') as nameAccesFile:
+    with open('nameAccessBot.txt','a') as nameAccesFile:
         nameAccesFile.write(str(info))
 
 # def daily_job(bot, update, job_queue):
