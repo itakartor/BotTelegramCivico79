@@ -72,7 +72,7 @@ def writeName(update: Update):
 #     job_queue.run_daily(messageIoStudio, t, days=tuple(range(7)), context=update)
 async def messageIoStudio(context: ContextTypes.DEFAULT_TYPE,pIdChannel:str=idChannel):
     await context.bot.send_message(chat_id=pIdChannel, text=CLOSE_CLASSROOM)
-async def messageIoStudio(context: ContextTypes.DEFAULT_TYPE,pIdChannel:str=idChannel):
+async def messageIoStudioUser(context: ContextTypes.DEFAULT_TYPE,update:Update):
     message:str = ''
     date = datetime.now()
     dayOfWeek = date.weekday()
@@ -82,11 +82,10 @@ async def messageIoStudio(context: ContextTypes.DEFAULT_TYPE,pIdChannel:str=idCh
        message += REST_MESSAGE
     if(dayOfWeek <= 2): # Monday, Tuesday, Wednesday
         message += NIGHT_MESSAGE
-    await context.bot.send_message(chat_id=pIdChannel, text=message)
+    if(dayOfWeek >=5 and dayOfWeek <= 7):
+        message = CLOSE_CLASSROOM
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
     
-async def messageIoStudioUser(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await messageIoStudio(context,update.effective_chat.id)
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text="Ciao, ti diamo il benvenuto")
     writeName(update) # it is used for to get username and some information of interaction with user
@@ -120,7 +119,7 @@ def main():
     job_queue = application.job_queue
 
     # the job starts to 11:00
-    job_minute = job_queue.run_daily(messageIoStudio, time(hour=11,minute=00,second=00))
+    #job_minute = job_queue.run_daily(messageIoStudio, time(hour=11,minute=00,second=00))
     
 
     application.add_handler(start_handler)
