@@ -11,7 +11,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-TOKEN:str = '2038354120:AAFWr6pZU5sf0-Q2lxU30msCyqEP01jW19c'#os.environ.get('TOKEN')
+TOKEN:str = os.environ.get('TOKEN')
 PORT:int = int(os.environ.get('PORT', 5000))
 logger = logging.getLogger(__name__)
 class InfoUser():
