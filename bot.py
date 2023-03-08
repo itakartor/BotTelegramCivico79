@@ -155,6 +155,7 @@ def main():
     if(civico_by_night):
         job_minute = job_queue.run_daily(messageIoStudio, time(hour=11,minute=00,second=00))
     
+    job_minute_init = job_queue.run_daily(init, time(hour=11,minute=00,second=00))
 
     application.add_handler(start_handler)
     application.add_handler(ioStudio_handler)
