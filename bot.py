@@ -59,6 +59,7 @@ NAME_ACCESS_FILE:str ='nameAccessBot'
 # it uses for to send the messages on the channel
 # instead of the user id which I can get from the update object
 idChannel:str = '@Civico79Livorno'
+channelDebug:str = '@provePazze'
 
 def error(update, context):
     """Log Errors caused by Updates."""
@@ -120,7 +121,8 @@ async def event(update: Update,context: ContextTypes.DEFAULT_TYPE): #'https://dr
             await context.bot.send_photo(chat_id=update.effective_chat.id,photo=media_1, caption=caption)
 async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=idChannel, text='One message every minute')
-def init():
+async def init(context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(chat_id=channelDebug,text="aggiornamento cofig civico79")
     gdown.download(url_config_event, NAME_CONFIG + FORMAT_JSON, quiet=False,fuzzy=True)
     with open(NAME_CONFIG + FORMAT_JSON,'r') as file:
         listOfGLobal = globals()
@@ -137,9 +139,8 @@ def init():
         listOfGLobal['close_classroom'] = data['close_classroom']
         listOfGLobal['who_message'] = data['who']
         listOfGLobal['not_event'] = data['not_event']
-    
+ 
 def main():
-    init()
     application = ApplicationBuilder().token(TOKEN).build()
     start_handler = CommandHandler('start', start)
     ioStudio_handler = CommandHandler('iostudio', messageIoStudioUser)
@@ -155,7 +156,7 @@ def main():
     if(civico_by_night):
         job_minute = job_queue.run_daily(messageIoStudio, time(hour=11,minute=00,second=00))
     
-    job_minute_init = job_queue.run_daily(init, time(hour=11,minute=00,second=00))
+    job_minute_init = job_queue.run_repeating(init,interval=60*60*4)#for each 4 hours the bot gets the config
 
     application.add_handler(start_handler)
     application.add_handler(ioStudio_handler)
