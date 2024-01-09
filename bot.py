@@ -121,8 +121,25 @@ async def event(update: Update,context: ContextTypes.DEFAULT_TYPE): #'https://dr
             await context.bot.send_photo(chat_id=update.effective_chat.id,photo=media_1, caption=caption)
 async def callback_minute(context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=idChannel, text='One message every minute')
-async def init(context: ContextTypes.DEFAULT_TYPE):
+async def asyncinit(context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=channelDebug,text="aggiornamento cofig civico79")
+    gdown.download(url_config_event, NAME_CONFIG + FORMAT_JSON, quiet=False,fuzzy=True)
+    with open(NAME_CONFIG + FORMAT_JSON,'r') as file:
+        listOfGLobal = globals()
+        data = json.load(file)
+        listOfGLobal['url_last_event'] = data['url_flyer'] 
+        listOfGLobal['url_file_caption_drive'] = data['url_caption']
+        listOfGLobal['civico_by_night'] = data['civico_by_night']
+        listOfGLobal['url_messages'] = data['url_messages']
+    gdown.download(url_messages, NAME_MESSAGGES + FORMAT_JSON, quiet=False,fuzzy=True)
+    with open(NAME_MESSAGGES + FORMAT_JSON,'r') as messages:
+        data = json.load(messages)
+        listOfGLobal['normal_day_message'] = data['normal_day']
+        listOfGLobal['night_message'] = data['night']
+        listOfGLobal['close_classroom'] = data['close_classroom']
+        listOfGLobal['who_message'] = data['who']
+        listOfGLobal['not_event'] = data['not_event']
+def init():
     gdown.download(url_config_event, NAME_CONFIG + FORMAT_JSON, quiet=False,fuzzy=True)
     with open(NAME_CONFIG + FORMAT_JSON,'r') as file:
         listOfGLobal = globals()
@@ -141,6 +158,7 @@ async def init(context: ContextTypes.DEFAULT_TYPE):
         listOfGLobal['not_event'] = data['not_event']
  
 def main():
+    init()
     application = ApplicationBuilder().token(TOKEN).build()
     start_handler = CommandHandler('start', start)
     ioStudio_handler = CommandHandler('iostudio', messageIoStudioUser)
@@ -156,7 +174,7 @@ def main():
     if(civico_by_night):
         job_minute = job_queue.run_daily(messageIoStudio, time(hour=11,minute=00,second=00))
     
-    job_minute_init = job_queue.run_repeating(init,interval=60*60*4)#for each 4 hours the bot gets the config
+    job_minute_init = job_queue.run_repeating(asyncinit,interval=60*60*4)#for each 4 hours the bot gets the config
 
     application.add_handler(start_handler)
     application.add_handler(ioStudio_handler)
